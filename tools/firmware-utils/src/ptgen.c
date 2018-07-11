@@ -149,7 +149,7 @@ static int gen_ptable(uint32_t signature, int nr)
 
 		start = sect + sectors;
 		if (kb_align != 0) {
-			if (i = 0)
+			if (i == 0)
 				start = round_to_kb(start);
 			else
 				start = sect;
