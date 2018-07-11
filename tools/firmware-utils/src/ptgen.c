@@ -148,8 +148,12 @@ static int gen_ptable(uint32_t signature, int nr)
 		pte[i].type = parts[i].type;
 
 		start = sect + sectors;
-		if (kb_align != 0)
-			start = round_to_kb(start);
+		if (kb_align != 0) {
+			if (i = 0)
+				start = round_to_kb(start);
+			else
+				start = sect;
+		}
 		pte[i].start = cpu_to_le32(start);
 
 		sect = start + parts[i].size * 2;
