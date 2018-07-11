@@ -135,7 +135,7 @@ static int gen_ptable(uint32_t signature, int nr)
 {
 	struct pte pte[4];
 	unsigned long sect = 0;
-	int i, fd, ret = -1, start, len;
+	int i, fd, ret = -1, start, len, aligned = 0;
 
 	memset(pte, 0, sizeof(struct pte) * 4);
 	for (i = 0; i < nr; i++) {
@@ -149,10 +149,14 @@ static int gen_ptable(uint32_t signature, int nr)
 
 		start = sect + sectors;
 		if (kb_align != 0) {
-			if (i == 0)
+			if (aligned == 0)
 				start = round_to_kb(start);
 			else
 				start = sect;
+			if (parts[i].size * 2 % kb_align == 0)
+				aligned = 1;
+			else
+				aligned = 0;
 		}
 		pte[i].start = cpu_to_le32(start);
 
