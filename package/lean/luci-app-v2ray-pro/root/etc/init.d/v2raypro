@@ -208,7 +208,6 @@ global {
 	server_port = $PDNSD_LOCAL_PORT;
 	status_ctl = on;
 	query_method = tcp_only;
-	run_ipv4=on;
 	min_ttl=1h;
 	max_ttl=1w;
 	timeout=10;
@@ -224,6 +223,9 @@ server {
 	uptest=none;
 	interval=10m;
 	purge_cache=off;
+	reject=::/0;
+	reject_policy=negate;
+	reject_recursively=on;
 }
 EOF
 
