@@ -224,7 +224,7 @@ server {
 	interval=10m;
 	purge_cache=off;
 	reject=::/0;
-	reject_recursively=on;
+	reject_policy=negate;
 }
 EOF
 
