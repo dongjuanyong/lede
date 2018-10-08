@@ -19,13 +19,15 @@ function index()
 	
 	entry({"admin", "services", "shadowsocksr", "list"},form("shadowsocksr/list"),_("GFW List"), 40).leaf = true
 	
-	entry({"admin", "services", "shadowsocksr", "status"},form("shadowsocksr/status"),_("Status"), 50).leaf = true
+		entry({"admin", "services", "shadowsocksr", "advanced"},cbi("shadowsocksr/advanced"),_("Advanced Settings"), 50).leaf = true
+	
+	entry({"admin", "services", "shadowsocksr", "status"},form("shadowsocksr/status"),_("Status"), 60).leaf = true
 	
 		entry({"admin", "services", "shadowsocksr", "check"}, call("check_status"))
 	entry({"admin", "services", "shadowsocksr", "refresh"}, call("refresh_data"))
 	entry({"admin", "services", "shadowsocksr", "checkport"}, call("check_port"))
 	
-	entry({"admin", "services", "shadowsocksr", "log"},form("shadowsocksr/log"),_("Log"), 60).leaf = true
+	entry({"admin", "services", "shadowsocksr", "log"},form("shadowsocksr/log"),_("Log"), 70).leaf = true
 	
 	entry({"admin", "services", "shadowsocksr","run"},call("act_status")).leaf=true
 	

@@ -467,7 +467,7 @@ stop() {
 	iptables -X SSR-SERVER-RULE 2>/dev/null
 	fi
 	if [ -z "$switch_server" ] ;then
-	killall -q -9 ssr-switch
+    kill -9 $(ps | grep ssr-switch | grep -v grep | awk '{print $1}') >/dev/null 2>&1
 	fi
 	killall -q -9 ssr-redir
 	killall -q -9 ssr-tunnel

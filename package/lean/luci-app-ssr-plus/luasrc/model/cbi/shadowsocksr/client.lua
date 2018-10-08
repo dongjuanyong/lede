@@ -31,12 +31,11 @@ for k, v in pairs(server_table) do o:value(k, v) end
 o.default = "nil"
 o.rmempty = false
 
-o = s:option(ListValue, "udp_relay_server", translate("UDP Relay Server"))
+o = s:option(ListValue, "udp_relay_server", translate("Game Mode UDP Server"))
 o:value("", translate("Disable"))
 o:value("same", translate("Same as Global Server"))
 for k, v in pairs(server_table) do o:value(k, v) end
 
-if nixio.fs.access("/usr/bin/ssr-gfw") then
 o = s:option(ListValue, "run_mode", translate("Running Mode"))
 o:value("gfw", translate("GFW List Mode"))
 o:value("router", translate("IP Route Mode"))
@@ -50,20 +49,12 @@ o.default = 1
 
 o = s:option(Flag, "tunnel_enable", translate("Enable Tunnel(DNS)"))
 o:depends("run_mode", "router")
-o.default = 0
+o.default = 1
 
 o = s:option(Value, "tunnel_port", translate("Tunnel Port"))
 o:depends("run_mode", "router")
 o.datatype = "port"
 o.default = 5300
-else
-o = s:option(Flag, "tunnel_enable", translate("Enable Tunnel(DNS)"))
-o.default = 0
-
-o = s:option(Value, "tunnel_port", translate("Tunnel Port"))
-o.datatype = "port"
-o.default = 5300
-end
 
 o = s:option(ListValue, "tunnel_forward", translate("Anti-pollution DNS Server"))
 o:value("8.8.4.4:53", translate("Google Public DNS (8.8.4.4)"))

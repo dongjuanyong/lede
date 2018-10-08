@@ -82,6 +82,10 @@ if luci.sys.call("ps -w | grep ssr-tunnel |grep -v grep >/dev/null") == 0 then
 tunnel_run=1
 end	
 
+if luci.sys.call("pidof pdnsd >/dev/null") == 0 then                 
+pdnsd_run=1     
+end	
+
 m = SimpleForm("Version")
 m.reset = false
 m.submit = false
@@ -94,13 +98,21 @@ else
 s.value = translate("Not Running")
 end
 
-s=m:field(DummyValue,"reudp_run",translate("UDP Relay")) 
+s=m:field(DummyValue,"reudp_run",translate("Game Mode UDP Relay")) 
 s.rawhtml  = true
 if reudp_run == 1 then
 s.value =font_blue .. bold_on .. translate("Running") .. bold_off .. font_off
 else
 s.value = translate("Not Running")
 end
+
+s=m:field(DummyValue,"pdnsd_run",translate("PDNSD"))
+s.rawhtml  = true                                              
+if pdnsd_run == 1 then                             
+s.value =font_blue .. bold_on .. translate("Running") .. bold_off .. font_off
+else             
+s.value = translate("Not Running")
+end 
 
 s=m:field(DummyValue,"tunnel_run",translate("DNS Tunnel")) 
 s.rawhtml  = true
@@ -109,6 +121,8 @@ s.value =font_blue .. bold_on .. translate("Running") .. bold_off .. font_off
 else
 s.value = translate("Not Running")
 end
+
+if nixio.fs.access("/usr/bin/ssr-kcptun") then
 
 s=m:field(DummyValue,"kcp_version",translate("KcpTun Version")) 
 s.rawhtml  = true
@@ -120,6 +134,8 @@ if kcptun_run == 1 then
 s.value =font_blue .. bold_on .. translate("Running") .. bold_off .. font_off
 else
 s.value = translate("Not Running")
+end
+
 end
 
 s=m:field(DummyValue,"google",translate("Google Connectivity"))
