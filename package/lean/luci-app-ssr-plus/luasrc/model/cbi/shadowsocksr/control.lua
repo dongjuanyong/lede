@@ -34,11 +34,11 @@ luci.ip.neighbors({ family = 4 }, function(entry)
 end)
 
 -- Part of Self
-s:tab("self_ac", translate("Router Self AC"))
-o = s:taboption("self_ac",ListValue, "router_proxy", translate("Router Self Proxy"))
-o:value("1", translatef("Normal Proxy"))
-o:value("0", translatef("Bypassed Proxy"))
-o:value("2", translatef("Forwarded Proxy"))
-o.rmempty = false
+-- s:tab("self_ac", translate("Router Self AC"))
+-- o = s:taboption("self_ac",ListValue, "router_proxy", translate("Router Self Proxy"))
+-- o:value("1", translatef("Normal Proxy"))
+-- o:value("0", translatef("Bypassed Proxy"))
+-- o:value("2", translatef("Forwarded Proxy"))
+-- o.rmempty = false
 
 return m

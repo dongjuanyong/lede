@@ -10,6 +10,9 @@ msgstr "启用"
 msgid "Disable"
 msgstr "停用"
 
+msgid "Log"
+msgstr "日志"
+
 msgid "ShadowSocksR is running"
 msgstr "ShadowSocksR 客户端运行中"
 
@@ -439,3 +442,12 @@ msgstr "通过路由器自身代理更新订阅（不推荐）"
 
 msgid "LAN IP AC"
 msgstr "LAN IP访问控制"
+
+msgid "Game Mode UDP Server"
+msgstr "游戏模式UDP中继服务器"
+
+msgid "Game Mode UDP Relay"
+msgstr "游戏模式UDP中继"
+
+msgid "Server failsafe auto swith settings"
+msgstr "服务器节点故障自动切换设置"
