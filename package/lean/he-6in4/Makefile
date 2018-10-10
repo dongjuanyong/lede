@@ -9,11 +9,11 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=he-6in4
 PKG_VERSION:=1.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_LICENSE:=GPLv3
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=ghostry <ghostry@ghostry.cn>
+PKG_MAINTAINER:=LEAN
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -23,7 +23,7 @@ define Package/he-6in4
 	SECTION:=ipv6
 	TITLE:=Dynamic Update he.net of ip
 	PKGARCH:=all
-	DEPENDS:=+luci-proto-ipv6 +6in4 +curl
+	DEPENDS:=+luci-proto-ipv6 +6in4 +wget
 endef
 
 define Package/he-6in4/description
