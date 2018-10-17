@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=vlmcsd
 PKG_VERSION:=svn1112
-PKG_RELEASE:=3
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=fuyumi <280604399@qq.com>
 PKG_LICENSE:=MIT
