@@ -98,5 +98,4 @@ start_service() {
 	done
 }
 
-stop_service() {
-}
+stop_service()
