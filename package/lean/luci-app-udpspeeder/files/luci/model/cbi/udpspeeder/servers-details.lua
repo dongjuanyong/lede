@@ -6,11 +6,11 @@ local modes = {
 	"1",
 }
 
-m = Map("udp2raw", "%s - %s" %{translate("udp2raw-tunnel"), translate("Edit Server")})
-m.redirect = luci.dispatcher.build_url("admin/services/udp2raw/servers")
+m = Map("udpspeeder", "%s - %s" %{translate("UDPspeeder"), translate("Edit Server")})
+m.redirect = luci.dispatcher.build_url("admin/services/udpspeeder/servers")
 m.sid = sid
 
-if m.uci:get("udp2raw", sid) ~= "servers" then
+if m.uci:get("udpspeeder", sid) ~= "servers" then
 	luci.http.redirect(m.redirect)
 	return
 end
