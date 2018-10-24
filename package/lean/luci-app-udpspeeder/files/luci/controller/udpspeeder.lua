@@ -6,7 +6,7 @@ function index()
 	end
 
 	entry({"admin", "services", "udpspeeder"},
-		firstchild(), _("udpspeeder")).dependent = false
+		firstchild(), _("UDPspeeder")).dependent = false
 
 	entry({"admin", "services", "udpspeeder", "general"},
 		cbi("udpspeeder/general"), _("Settings"), 1)
