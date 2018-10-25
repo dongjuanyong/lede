@@ -39,7 +39,7 @@ validate_server_section() {
 		'jitter:number' \
 		'interval:number' \
 		'random_drop:range(0,10000)' \
-		'disable_obscure:bool:0' \
+		'disable_obscure:bool' \
 		'log_level:range(0,6)'
 }
 
