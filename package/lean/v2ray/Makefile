@@ -6,13 +6,6 @@
 
 include $(TOPDIR)/rules.mk
 
-<<<<<<< HEAD
-PKG_NAME:=v2ray
-PKG_VERSION:=v3.50
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
-
-=======
->>>>>>> master
 ifeq ($(ARCH),x86_64)
 	PKG_ARCH_V2RAY:=linux-64
 endif
@@ -33,7 +26,7 @@ ifeq ($(ARCH),aarch64)
 endif
 
 PKG_NAME:=v2ray
-PKG_VERSION:=4.0.2
+PKG_VERSION:=4.2
 PKG_RELEASE:=1
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_ARCH_V2RAY).zip
