@@ -8,6 +8,7 @@ local ipkg = require("luci.model.ipkg")
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 local sid = arg[1]
+local uuid = luci.sys.exec("cat /proc/sys/kernel/random/uuid")
 
 local function isKcptun(file)
     if not fs.access(file, "rwx", "rx", "rx") then
@@ -122,18 +123,18 @@ o:depends("type", "ssr")
 
 o = s:option(Value, "alias", translate("Alias(optional)"))
 
-if nixio.fs.access("/usr/bin/v2ray") then
+
 o = s:option(ListValue, "type", translate("Server Node Type"))
 o:value("ssr", translate("ShadowsocksR"))
+if nixio.fs.access("/usr/bin/ss-redir") then
 o:value("ss", translate("Shadowsocks New Version"))
-o:value("v2ray", translate("V2Ray"))
-o.description = translate("Using incorrect encryption mothod may causes service fail to start")
-else
-o = s:option(ListValue, "type", translate("Server Node Type"))
-o:value("ssr", translate("ShadowsocksR"))
-o:value("ss", translate("Shadowsocks New Version"))
-o.description = translate("Using incorrect encryption mothod may causes service fail to start")
 end
+if nixio.fs.access("/usr/bin/v2ray/v2ray") then
+o:value("v2ray", translate("V2Ray"))
+end
+o.description = translate("Using incorrect encryption mothod may causes service fail to start")
+
+
 
 o = s:option(Value, "server", translate("Server Address"))
 o.datatype = "host"
@@ -151,6 +152,8 @@ o.rmempty = false
 o = s:option(Value, "password", translate("Password"))
 o.password = true
 o.rmempty = false
+o:depends("type", "ssr")
+o:depends("type", "ss")
 
 o = s:option(ListValue, "encrypt_method", translate("Encrypt Method"))
 for _, v in ipairs(encrypt_methods) do o:value(v) end
@@ -186,17 +189,18 @@ o.rmempty = false
 o:depends("type", "v2ray")
 
 -- VmessId
-o = s:option(Value, "vmess_id", translate("VmessId"))
+o = s:option(Value, "vmess_id", translate("VmessId (UUID)"))
 o.rmempty = false
+o.default = uuid
 o:depends("type", "v2ray")
 
--- 鍔犲瘑鏂瑰紡
+-- 加密方式
 o = s:option(ListValue, "security", translate("Encrypt Method"))
 for _, v in ipairs(securitys) do o:value(v, v:upper()) end
 o.rmempty = false
 o:depends("type", "v2ray")
 
--- 浼犺緭鍗忚
+-- 传输协议
 o = s:option(ListValue, "transport", translate("Transport"))
 o:value("tcp", "TCP")
 o:value("kcp", "mKCP")
@@ -205,50 +209,50 @@ o:value("h2", "HTTP/2")
 o.rmempty = false
 o:depends("type", "v2ray")
 
--- [[ TCP閮ㄥ垎 ]]--
+-- [[ TCP部分 ]]--
 
--- TCP浼
+-- TCP伪装
 o = s:option(ListValue, "tcp_guise", translate("Camouflage Type"))
 o:depends("transport", "tcp")
 o:value("none", translate("None"))
 o:value("http", "HTTP")
 o.rmempty = true
 
--- HTTP鍩熷悕
+-- HTTP域名
 o = s:option(DynamicList, "http_host", translate("HTTP Host"))
 o:depends("tcp_guise", "http")
 o.rmempty = true
 
--- HTTP璺緞
+-- HTTP路径
 o = s:option(DynamicList, "http_path", translate("HTTP Path"))
 o:depends("tcp_guise", "http")
 o.rmempty = true
 
--- [[ WS閮ㄥ垎 ]]--
+-- [[ WS部分 ]]--
 
--- WS鍩熷悕
+-- WS域名
 o = s:option(Value, "ws_host", translate("WebSocket Host"))
 o:depends("transport", "ws")
 o.rmempty = true
 
--- WS璺緞
+-- WS路径
 o = s:option(Value, "ws_path", translate("WebSocket Path"))
 o:depends("transport", "ws")
 o.rmempty = true
 
--- [[ H2閮ㄥ垎 ]]--
+-- [[ H2部分 ]]--
 
--- H2鍩熷悕
+-- H2域名
 o = s:option(DynamicList, "h2_host", translate("HTTP/2 Host"))
 o:depends("transport", "h2")
 o.rmempty = true
 
--- H2璺緞
+-- H2路径
 o = s:option(Value, "h2_path", translate("HTTP/2 Path"))
 o:depends("transport", "h2")
 o.rmempty = true
 
--- [[ mKCP閮ㄥ垎 ]]--
+-- [[ mKCP部分 ]]--
 
 o = s:option(ListValue, "kcp_guise", translate("Camouflage Type"))
 o:depends("transport", "kcp")
@@ -300,14 +304,26 @@ o = s:option(Flag, "congestion", translate("Congestion"))
 o:depends("transport", "kcp")
 o.rmempty = true
 
+-- [[ allowInsecure ]]--
+o = s:option(Flag, "insecure", translate("allowInsecure"))
+o.rmempty = false
+o:depends("type", "v2ray")
+
 -- [[ TLS ]]--
 o = s:option(Flag, "tls", translate("TLS"))
+o.rmempty = false
+o:depends("type", "v2ray")
+
+-- [[ Mux ]]--
+o = s:option(Flag, "mux", translate("Mux"))
 o.rmempty = false
 o:depends("type", "v2ray")
 
 o = s:option(Flag, "fast_open", translate("TCP Fast Open"))
 o.rmempty = false
 o.default = "0"
+o:depends("type", "ssr")
+o:depends("type", "ss")
 
 o = s:option(Flag, "switch_enable", translate("Enable Auto Switch"))
 o.rmempty = false
@@ -322,6 +338,8 @@ if nixio.fs.access("/usr/bin/ssr-kcptun") then
 
 kcp_enable = s:option(Flag, "kcp_enable", translate("KcpTun Enable"), translate("bin:/usr/bin/ssr-kcptun"))
 kcp_enable.rmempty = false
+kcp_enable:depends("type", "ssr")
+kcp_enable:depends("type", "ss")
 
 o = s:option(Value, "kcp_port", translate("KcpTun Port"))
 o.datatype = "port"
@@ -339,12 +357,18 @@ function o.validate(self, value, section)
 
     return value
 end
+o:depends("type", "ssr")
+o:depends("type", "ss")
 
 o = s:option(Value, "kcp_password", translate("KcpTun Password"))
 o.password = true
+o:depends("type", "ssr")
+o:depends("type", "ss")
 
 o = s:option(Value, "kcp_param", translate("KcpTun Param"))
 o.default = "--nocomp"
+o:depends("type", "ssr")
+o:depends("type", "ss")
 
 end
 
