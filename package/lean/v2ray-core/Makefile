@@ -41,7 +41,7 @@ endef
 
 define Package/$(PKG_NAME)/config
 menu "V2Ray Configuration"
-	depends on PACKAGE_v2ray
+	depends on PACKAGE_v2ray-core
 
 config PACKAGE_V2RAY_INCLUDE_V2RAY
 	bool "Include v2ray"
