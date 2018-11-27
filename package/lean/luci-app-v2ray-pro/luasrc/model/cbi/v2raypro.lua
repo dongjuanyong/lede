@@ -92,7 +92,6 @@ alterId.rmempty = false
 security = s:taboption("main",ListValue, "security", translate("Security"))
 security:value("none")
 security:value("auto")
-security:value("aes-128-cfb")
 security:value("aes-128-gcm")
 security:value("chacha20-poly1305")
 
@@ -101,6 +100,7 @@ network_type:value("tcp")
 network_type:value("kcp")
 network_type:value("ws")
 network_type:value("h2")
+network_type:value("quic")
 
 -- tcp settings
 tcp_obfs = s:taboption("main",ListValue, "tcp_obfs", translate("TCP Obfs"))
@@ -167,6 +167,26 @@ h2_path:depends("network_type", "h2")
 h2_domain = s:taboption("main",Value, "h2_domain", translate("HTTP Domain"))
 h2_domain:depends("network_type", "h2")
 h2_domain.datatype = "host"
+
+-- quic settings
+quic_security = s:taboption("main",ListValue, "quic_security", translate("QUIC Security"))
+quic_security:value("none")
+quic_security:value("aes-128-gcm")
+quic_security:value("chacha20-poly1305")
+quic_security:depends("network_type", "quic")
+
+quic_key = s:taboption("main",Value, "quic_key", translate("QUIC Key"))
+quic_key:depends("quic_security", "aes-128-gcm")
+quic_key:depends("quic_security", "chacha20-poly1305")
+
+quic_obfs = s:taboption("main",ListValue, "quic_obfs", translate("QUIC Obfs"))
+quic_obfs:value("none")
+quic_obfs:value("srtp")
+quic_obfs:value("utp")
+quic_obfs:value("wechat-video")
+quic_obfs:value("dtls")
+quic_obfs:value("wireguard")
+quic_obfs:depends("network_type", "quic")
 
 -- others
 tls = s:taboption("main",Flag, "tls", translate("TLS"))

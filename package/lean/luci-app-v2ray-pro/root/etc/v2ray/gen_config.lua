@@ -156,6 +156,14 @@ local v2ray	= {
 					ucursor:get(conf_path, "v2raypro", "h2_domain")
 				} or nil,
 			} or nil,
+
+			quicSettings = (v2ray_stream_mode == "quic") and {
+				security = ucursor:get(conf_path, "v2raypro", "quic_security"),
+				key = ucursor:get(conf_path, "v2raypro", "quic_key"),
+				header = {
+					type = ucursor:get(conf_path, "v2raypro", "quic_obfs")
+				}
+			} or nil,
 		},
 		mux = {
 			enabled = (ucursor:get(conf_path, "v2raypro", "mux") == "1") and true or false
