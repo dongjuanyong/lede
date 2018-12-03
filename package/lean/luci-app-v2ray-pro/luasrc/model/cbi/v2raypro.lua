@@ -178,6 +178,7 @@ quic_security:depends("network_type", "quic")
 quic_key = s:taboption("main",Value, "quic_key", translate("QUIC Key"))
 quic_key:depends("quic_security", "aes-128-gcm")
 quic_key:depends("quic_security", "chacha20-poly1305")
+quic_key.password = true
 
 quic_obfs = s:taboption("main",ListValue, "quic_obfs", translate("QUIC Obfs"))
 quic_obfs:value("none")
