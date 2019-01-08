@@ -9,11 +9,13 @@ json_path = json_path or "/tmp/config.json"
 
 local local_listen_port = 7070
 local local_socks_port = 1080
+local local_http_port = 3128
 
 local cjson = require "cjson.safe"
 local ucursor = require "luci.model.uci".cursor()
 local lip = require "luci.ip"
 
+local v2ray_alternative_proxy = ucursor:get(conf_path, "v2raypro", "alternative_proxy")
 local v2ray_stream_mode = ucursor:get(conf_path, "v2raypro", "network_type")	-- tcp/kcp/ws
 
 function v2ray_get_conf_list(op)
@@ -59,21 +61,28 @@ local v2ray	= {
 		protocol = "dokodemo-door",
 		port = local_listen_port,
 		domainOverride = {"tls", "http"},
-		address = "",
 		settings = {
 			network = "tcp,udp",
 			timeout = 30,
 			followRedirect = true
 		},
 	  },
-	  [2] = {
+	  [2] = (v2ray_alternative_proxy == '1') and {
 		protocol = "socks",
 		port = local_socks_port,
 		domainOverride = {"tls", "http"},
 		settings = {
-			auth = "noauth"
+			udp = true
 		},
-	  },
+	  } or nil,
+	  [3] = (v2ray_alternative_proxy == '1') and {
+		protocol = "http",
+		port = local_http_port,
+		domainOverride = {"tls", "http"},
+		settings = {
+			timeout = 30
+		},
+	  } or nil,
 	},
 	outbounds = {
 	  [1] = {

@@ -72,6 +72,11 @@ safe_dns_tcp.rmempty = false
 --fast_open =s:taboption("basic",Flag, "fast_open", translate("TCP Fast Open"),
 --	translate("Enable TCP fast open, only available on kernel > 3.7.0"))
 
+alternative_proxy = s:taboption("basic",Flag, "alternative_proxy", translate("Alternative Proxies"),
+	translate("Listen to port 1080 (SOCKS5 proxy) and port 3128 (HTTP proxy)"))
+alternative_proxy.default = 0
+alternative_proxy.rmempty = false
+
 s:tab("main",  translate("Server Setting"))
 
 server = s:taboption("main",Value, "address", translate("Server Address"))
