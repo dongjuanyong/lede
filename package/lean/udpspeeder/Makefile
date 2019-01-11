@@ -15,11 +15,11 @@ PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/wangyu-/UDPspeeder.git
 PKG_SOURCE_VERSION:=8db00a87f433d174f3bdabaf95f8659c66a1c52e
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=Yu Wang
+PKG_MAINTAINER:=wangyu-
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
@@ -30,21 +30,23 @@ include $(INCLUDE_DIR)/package.mk
 define Package/udpspeeder
 	SECTION:=net
 	CATEGORY:=Network
-	TITLE:=Tunnel which Improves your Network Quality by Using FEC
+	TITLE:=UDP Network Speed-Up Tool
 	URL:=https://github.com/wangyu-/UDPspeeder
+	DEPENDS:= +libstdcpp +librt
 endef
 
 define Package/udpspeeder/description
-	UDPspeeder is a tunnel which improves your network quality on a high-latency lossy link by using forward error correction, for all traffics(TCP/UDP/ICMP).
+	 A Tunnel which Improves your Network Quality on a High-latency Lossy Link by using Forward Error Correction,for All Traffics(TCP/UDP/ICMP)
 endef
 
-MAKE_FLAGS += cross2
+MAKE_FLAGS += cross
 
-define Build/Configure
-	$(call Build/Configure/Default)
-	$(SED) 's/cc_cross[[:space:]]*=.*/cc_cross=$(TARGET_CXX)/' \
-		-e 's/\\".*shell git rev-parse HEAD.*\\"/\\"$(PKG_SOURCE_VERSION)\\"/' \
-		$(PKG_BUILD_DIR)/makefile
+define Build/Prepare
+	$(PKG_UNPACK)
+	sed -i 's/cc_cross=.*/cc_cross=$(TARGET_CXX)/g' $(PKG_BUILD_DIR)/makefile
+	sed -i '/\gitversion/d' $(PKG_BUILD_DIR)/makefile
+	echo 'const char * const gitversion = "$(PKG_VERSION)";' > $(PKG_BUILD_DIR)/git_version.h
+	$(Build/Patch)
 endef
 
 define Package/udpspeeder/install
