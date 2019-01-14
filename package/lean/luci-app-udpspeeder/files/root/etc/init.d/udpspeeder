@@ -33,11 +33,11 @@ validate_server_section() {
 		'key:string' \
 		'fec:string:20:10' \
 		'mode:or("0", "1"):0' \
-		'timeout:number' \
+		'timeout:uinteger' \
 		'mtu:range(0,2000)' \
-		'queue_len:number' \
-		'jitter:number' \
-		'interval:number' \
+		'queue_len:uinteger' \
+		'jitter:uinteger' \
+		'interval:uinteger' \
 		'random_drop:range(0,10000)' \
 		'disable_obscure:bool' \
 		'log_level:range(0,6)'
@@ -75,7 +75,7 @@ start_instance() {
 	[ -n "$jitter" ] && procd_append_param command -j ${jitter}
 	[ -n "$interval" ] && procd_append_param command -i ${interval}
 	[ -n "$random_drop" ] && procd_append_param command --random-drop ${random_drop}
-	[ -n "$disable_obscure" ] && procd_append_param command --disable-obscure ${disable_obscure}
+	[ "$disable_obscure" -eq "1" ] && procd_append_param command --disable-obscure
 	[ -n "$log_level" ] && procd_append_param command --log-level ${log_level}
 	procd_set_param respawn
 	[ -n "$daemon_user" ] && procd_set_param user "$daemon_user" && _log "info" "running from ${daemon_user} user"

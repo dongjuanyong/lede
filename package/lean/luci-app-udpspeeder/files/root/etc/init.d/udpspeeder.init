@@ -35,11 +35,11 @@ validate_server_section() {
 		'key:string' \
 		'fec:string:20:10' \
 		'mode:or("0", "1"):0' \
-		'timeout:number' \
+		'timeout:uinteger' \
 		'mtu:range(0,2000)' \
-		'queue_len:number' \
-		'jitter:number' \
-		'interval:number' \
+		'queue_len:uinteger' \
+		'jitter:uinteger' \
+		'interval:uinteger' \
 		'random_drop:range(0,10000)' \
 		'disable_obscure:bool' \
 		'log_level:range(0,6)' \
@@ -78,7 +78,7 @@ start_instance() {
 	[ -n "$jitter" ] && cmdline="${cmdline} -j ${jitter}"
 	[ -n "$interval" ] && cmdline="${cmdline} -i ${interval}"
 	[ -n "$random_drop" ] && cmdline="${cmdline} --random-drop ${random_drop}"
-	[ -n "$disable_obscure" ] && cmdline="${cmdline} --disable-obscure ${disable_obscure}"
+	[ "$disable_obscure" -eq "1" ] && cmdline="${cmdline} --disable-obscure"
 	[ -n "$log_level" ] && cmdline="${cmdline} --log-level ${log_level}"
 
 	$(eval echo $cmdline) >> "/var/log/${NAME}/${NAME}.${server}.log" &
