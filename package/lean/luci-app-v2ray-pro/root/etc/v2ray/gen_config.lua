@@ -83,13 +83,6 @@ local v2ray	= {
 	  [3] = (v2ray_alternative_proxy == '1') and {
 		protocol = "http",
 		port = local_http_port,
-		sniffing = {
-			enable = true,
-			destOverride = {
-				[1] = "http",
-				[2] = "tls"
-			}
-		},
 		settings = {
 			timeout = 30
 		}
