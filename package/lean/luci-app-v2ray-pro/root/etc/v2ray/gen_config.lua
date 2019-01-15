@@ -52,37 +52,48 @@ end
 
 local v2ray	= {
 	log = {
-		access = "",
-		error = "",
-		loglevel = "none"
+		access = "/var/log/v2access.log",
+		error = "/var/log/v2error.log",
+		loglevel = "warning"
 	},
 	inbounds = {
 	  [1] = {
 		protocol = "dokodemo-door",
 		port = local_listen_port,
-		domainOverride = {"tls", "http"},
 		settings = {
 			network = "tcp,udp",
 			timeout = 30,
 			followRedirect = true
-		},
+		}
 	  },
 	  [2] = (v2ray_alternative_proxy == '1') and {
 		protocol = "socks",
 		port = local_socks_port,
-		domainOverride = {"tls", "http"},
+		sniffing = {
+			enable = true,
+			destOverride = {
+				[1] = "http",
+				[2] = "tls"
+			}
+		},
 		settings = {
 			udp = true
-		},
+		}
 	  } or nil,
 	  [3] = (v2ray_alternative_proxy == '1') and {
 		protocol = "http",
 		port = local_http_port,
-		domainOverride = {"tls", "http"},
+		sniffing = {
+			enable = true,
+			destOverride = {
+				[1] = "http",
+				[2] = "tls"
+			}
+		},
 		settings = {
 			timeout = 30
-		},
-	  } or nil,
+		}
+	  } or nil
 	},
 	outbounds = {
 	  [1] = {
@@ -97,10 +108,10 @@ local v2ray	= {
 				    id = ucursor:get(conf_path, "v2raypro", "id"),
 					alterId = tonumber(ucursor:get(conf_path, "v2raypro", "alterId")),
 					security = ucursor:get(conf_path, "v2raypro", "security")
-				  },
-				},
-			  },
-			},
+				  }
+				}
+			  }
+			}
 		},
 		streamSettings = {
 			network = ucursor:get(conf_path, "v2raypro", "network_type"),
@@ -122,7 +133,7 @@ local v2ray	= {
 							Accept_Encoding = {"gzip, deflate"},
 							Connection = {"keep-alive"},
 							Pragma = "no-cache"
-						},
+						}
 					},
 					response = {
 						version = "1.1",
@@ -133,8 +144,8 @@ local v2ray	= {
 							Transfer_Encoding = {"chunked"},
 							Connection= {"keep-alive"},
 							Pragma = "no-cache"
-						},
-					},
+						}
+					}
 				}
 			} or nil,
 
@@ -156,14 +167,14 @@ local v2ray	= {
 				path = ucursor:get(conf_path, "v2raypro", "ws_path"),
 				headers = (ucursor:get(conf_path, "v2raypro", "ws_headers") ~= nil) and {
 					Host = ucursor:get(conf_path, "v2raypro", "ws_headers")
-				} or nil,
+				} or nil
 			} or nil,
 
 			httpSettings = (v2ray_stream_mode == "h2") and {
 				path = ucursor:get(conf_path, "v2raypro", "h2_path"),
 				host = (ucursor:get(conf_path, "v2raypro", "h2_domain") ~= nil) and {
 					ucursor:get(conf_path, "v2raypro", "h2_domain")
-				} or nil,
+				} or nil
 			} or nil,
 
 			quicSettings = (v2ray_stream_mode == "quic") and {
@@ -172,18 +183,18 @@ local v2ray	= {
 				header = {
 					type = ucursor:get(conf_path, "v2raypro", "quic_obfs")
 				}
-			} or nil,
+			} or nil
 		},
 		mux = {
 			enabled = (ucursor:get(conf_path, "v2raypro", "mux") == "1") and true or false
-		},
-	  },
+		}
+	  }
 	},
 	dns = {
 		servers = {
-			"localhost"
-		},
-	},
+			[1] = "localhost"
+		}
+	}
 }
 
 -- Generate config json to <json_path>
