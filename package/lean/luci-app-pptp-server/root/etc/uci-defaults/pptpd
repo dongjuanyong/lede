@@ -4,7 +4,7 @@ uci -q batch <<-EOF >/dev/null
   delete network.vpn
   set network.vpn=interface
   set network.vpn.proto=none
-  set network.vpn.ifname=ppp.
+  set network.vpn.ifname=ppp+
   set network.vpn.auto=1
   commit network
 EOF
