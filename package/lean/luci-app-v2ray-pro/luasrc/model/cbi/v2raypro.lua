@@ -72,6 +72,12 @@ safe_dns_tcp.rmempty = false
 --fast_open =s:taboption("basic",Flag, "fast_open", translate("TCP Fast Open"),
 --	translate("Enable TCP fast open, only available on kernel > 3.7.0"))
 
+safe_dns_dnscrypt = s:taboption("basic",Flag, "safe_dns_dnscrypt", translate("Use dnscrypt-proxy"),
+	translate("Use dnscrypt-proxy to forward DNS requests, instead of pdnsd"))
+safe_dns_dnscrypt.default = 0
+safe_dns_dnscrypt.rmempty = false
+safe_dns_dnscrypt:depends("safe_dns_tcp", "1")
+
 alternative_proxy = s:taboption("basic",Flag, "alternative_proxy", translate("Alternative Proxies"),
 	translate("Listen to port 1080 (SOCKS5 proxy) and port 3128 (HTTP proxy)"))
 alternative_proxy.default = 0

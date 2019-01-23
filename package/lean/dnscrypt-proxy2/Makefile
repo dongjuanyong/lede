@@ -15,7 +15,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
-	TITLE:=dnscrypt-proxy 2 - A flexible DNS proxy, with support for encrypted DNS protocols.
+	TITLE:=A flexible DNS proxy, with support for encrypted DNS protocols
 	URL:=https://github.com/jedisct1/dnscrypt-proxy
 endef
 
@@ -42,6 +42,7 @@ endef
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/linux-$(PKG_ARCH)/$(PKG_BIN) $(1)/usr/bin/$(PKG_BIN)
+	$(CP) -a files/* $(1)/
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
