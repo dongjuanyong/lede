@@ -33,6 +33,8 @@ PKG_BIN:=dnscrypt-proxy
 define Build/Prepare
 	[ ! -f $(PKG_BUILD_DIR)/$(PKG_BIN)-linux_$(PKG_ARCH)-$(PKG_VERSION).tar.gz ] && wget https://github.com/jedisct1/$(PKG_BIN)/releases/download/$(PKG_VERSION)/$(PKG_BIN)-linux_$(PKG_ARCH)-$(PKG_VERSION).tar.gz -O $(PKG_BUILD_DIR)/$(PKG_BIN)-linux_$(PKG_ARCH)-$(PKG_VERSION).tar.gz
 	tar -xzf $(PKG_BUILD_DIR)/$(PKG_BIN)-linux_$(PKG_ARCH)-$(PKG_VERSION).tar.gz -C $(PKG_BUILD_DIR)
+	[ ! -f $(PKG_BUILD_DIR)/public-resolvers.md ] && wget https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v2/public-resolvers.md -O $(PKG_BUILD_DIR)/public-resolvers.md
+	[ ! -f $(PKG_BUILD_DIR)/public-resolvers.md.minisig ] && wget https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v2/public-resolvers.md.minisig -O $(PKG_BUILD_DIR)/public-resolvers.md.minisig
 endef
 
 define Build/Compile
@@ -42,7 +44,9 @@ endef
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/linux-$(PKG_ARCH)/$(PKG_BIN) $(1)/usr/bin/$(PKG_BIN)
-	$(CP) -a files/* $(1)/
+	$(INSTALL_DIR) $(1)/etc/$(PKG_BIN)
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/public-resolvers.md $(1)/etc/$(PKG_BIN)/public-resolvers.md
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/public-resolvers.md.minisig $(1)/etc/$(PKG_BIN)/public-resolvers.md.minisig
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))

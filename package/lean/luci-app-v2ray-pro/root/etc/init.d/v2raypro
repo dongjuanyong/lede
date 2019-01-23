@@ -8,7 +8,6 @@ STOP=10
 EXTRA_COMMANDS="reload_rule"
 
 V2RAY_REDIR_PORT=7070
-V2RAY_REDIR_PIDFILE=/var/run/v2ray-redir-go.pid 
 PDNSD_LOCAL_PORT=7453
 DNSCRYPT_LOCAL_PORT=5353
 V2RAYCONF=/tmp/config.json
@@ -22,15 +21,7 @@ get_config()
 {
 	config_get_bool vt_enabled $1 enabled 0
 	config_get vt_server_addr $1 address
-	config_get vt_server_port $1 server_port
-	config_get vt_password $1 password
-	config_get vt_method $1 method
-	config_get vt_protocol $1 protocol
-	config_get vt_protoparam $1 protoparam
-	config_get vt_obfs $1 obfs
-	config_get obfs_param $1 obfs_param
 	config_get vt_proxy_mode $1 proxy_mode
-	config_get vt_timeout $1 timeout
 	config_get vt_safe_dns $1 safe_dns
 	config_get vt_safe_dns_port $1 safe_dns_port
 	config_get vt_safe_dns_tcp $1 safe_dns_tcp
@@ -72,8 +63,6 @@ start()
 
 	local vt_gfwlist=`__gfwlist_by_mode $vt_proxy_mode`
 	[ -z "$vt_proxy_mode" ] && vt_proxy_mode=M
-	[ -z "$vt_method" ] && vt_method=table
-	[ -z "$vt_timeout" ] && vt_timeout=60
 	case "$vt_proxy_mode" in
 		M|S|G)
 			[ -z "$vt_safe_dns" ] && vt_safe_dns="8.8.8.8"
@@ -157,10 +146,6 @@ stop()
 	del_rule
 
 	# -----------------------------------------------------------------
-	if [ -f $V2RAY_REDIR_PIDFILE ]; then
-		kill -9 `cat $V2RAY_REDIR_PIDFILE`
-		rm -f $V2RAY_REDIR_PIDFILE
-	fi
 	killall -9 v2ray 2>/dev/null
 	del_cron
 }
@@ -287,7 +272,6 @@ use_syslog = false
 cert_refresh_delay = 240
 fallback_resolver = '9.9.9.9:53'
 ignore_system_dns = false
-netprobe_timeout = 60
 block_ipv6 = true
 cache = true
 cache_size = 25600
