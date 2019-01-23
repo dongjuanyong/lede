@@ -101,7 +101,7 @@ start()
 		if [ "$vt_safe_dns_tcp" = 1 ]; then
 			if [ "$vt_safe_dns_dnscrypt" = 1 ]; then
 				start_dnscrypt
-				awk -vs="127.0.0.1#$DNSCRYPT_LOCAL_PORT" '!/^$/&&!/^#/{printf("server=/%s/%s\n",$0,s)}' \
+				awk -vs="::1#$DNSCRYPT_LOCAL_PORT" '!/^$/&&!/^#/{printf("server=/%s/%s\n",$0,s)}' \
 					/etc/gfwlist/$vt_gfwlist > /var/etc/dnsmasq-go.d/01-pollution.conf
 			else
 				start_pdnsd "$vt_safe_dns"
@@ -224,6 +224,7 @@ global {
 	min_ttl=1h;
 	max_ttl=1w;
 	timeout=10;
+	neg_domain_pol=on;
 	proc_limit=40;
 	procq_limit=60;
 }
@@ -235,8 +236,6 @@ server {
 	uptest=none;
 	interval=10m;
 	purge_cache=off;
-	reject=::/0;
-	reject_policy=negate;
 }
 EOF
 
@@ -270,7 +269,7 @@ start_dnscrypt()
 	cat > /var/etc/dnscrypt-proxy.toml <<EOF
 
 server_names = [$dnscrypt_dns_list]
-listen_addresses = ['127.0.0.1:$DNSCRYPT_LOCAL_PORT', '[::1]:$DNSCRYPT_LOCAL_PORT']
+listen_addresses = ['[::1]:$DNSCRYPT_LOCAL_PORT']
 max_clients = 300
 ipv4_servers = true
 ipv6_servers = false
