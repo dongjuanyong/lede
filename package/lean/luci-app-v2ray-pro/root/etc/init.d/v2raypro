@@ -60,16 +60,16 @@ __gfwlist_by_mode()
 
 start()
 {   
-  config_load v2raypro
+	config_load v2raypro
 	config_foreach get_config v2raypro
-  
+
 	[ -f /etc/init.d/pdnsd ] && /etc/init.d/pdnsd disable 2>/dev/null
 	
 	if [ "$vt_enabled" = 0 ]; then
 		echo "WARNING: v2ray is disabled."
 		exit 0
 	fi
-	
+
 	local vt_gfwlist=`__gfwlist_by_mode $vt_proxy_mode`
 	[ -z "$vt_proxy_mode" ] && vt_proxy_mode=M
 	[ -z "$vt_method" ] && vt_method=table
@@ -90,10 +90,10 @@ start()
 	
 	echo "V2Ray started"
 
-   
+
 	# IPv4 firewall rules
-  add_rule
-  
+	add_rule
+
 	# -----------------------------------------------------------------
 	mkdir -p /var/etc/dnsmasq-go.d
 	###### Anti-pollution configuration ######
@@ -140,7 +140,7 @@ EOF
 
 stop()
 {
-  
+
 	# -----------------------------------------------------------------
 	rm -rf /var/etc/dnsmasq-go.d
 	if [ -f /tmp/dnsmasq.d/dnsmasq-go.conf ]; then
@@ -149,11 +149,13 @@ stop()
 	fi
 
 	stop_pdnsd
-	stop_dnscrypt
+	if [ "$vt_safe_dns_dnscrypt" = 0 ]; then
+		stop_dnscrypt
+	fi
 
 	# --STOP IPv4 firewall---------------------------------------------------------------
-  del_rule
-  
+	del_rule
+
 	# -----------------------------------------------------------------
 	if [ -f $V2RAY_REDIR_PIDFILE ]; then
 		kill -9 `cat $V2RAY_REDIR_PIDFILE`
@@ -166,7 +168,7 @@ stop()
 
 reload_rule()
 {
-  config_load v2raypro
+	config_load v2raypro
 	config_foreach get_config v2raypro
 	
 	local vt_gfwlist=`__gfwlist_by_mode $vt_proxy_mode`
@@ -174,14 +176,12 @@ reload_rule()
 	KEEP_GFWLIST=Y
 	del_rule
 	add_rule
-	if [ "$vt_safe_dns_tcp" = 1 ]; then
-		if [ "$vt_safe_dns_dnscrypt" = 1 ]; then
-			stop_dnscrypt
-			start_dnscrypt
-		else
-    		stop_pdnsd
-    		start_pdnsd
-    	fi
+	if [ "$vt_safe_dns_dnscrypt" = 0 ]; then
+		stop_dnscrypt
+		if [ "$vt_safe_dns_tcp" = 1 ]; then
+			stop_pdnsd
+			start_pdnsd "$vt_safe_dns"
+		fi
 	fi
 }
 
@@ -206,9 +206,9 @@ start_pdnsd()
 	
 	[ -d /var/etc ] || mkdir -p /var/etc
 	if [ ! -d /var/pdnsd ];then
-            mkdir -p /var/pdnsd
-            echo -ne "pd13\000\000\000\000" >/var/pdnsd/pdnsd.cache
-            chown -R nobody:nogroup /var/pdnsd
+		mkdir -p /var/pdnsd
+		echo -ne "pd13\000\000\000\000" >/var/pdnsd/pdnsd.cache
+		chown -R nobody:nogroup /var/pdnsd
 	fi
 	
 	cat > /var/etc/pdnsd.conf <<EOF
@@ -263,7 +263,9 @@ start_dnscrypt()
 {
 	local dnscrypt_dns_list="'rubyfish-uw', 'google', 'cisco', 'cloudflare'"
 
-	killall -9 dnscrypt-proxy >/dev/null 2>&1 
+	if pidof dnscrypt-proxy>/dev/null; then
+		return 0
+	fi
 	
 	[ -d /var/etc ] || mkdir -p /var/etc
 	cat > /var/etc/dnscrypt-proxy.toml <<EOF
@@ -321,19 +323,19 @@ cache_neg_max_ttl = 600
   # stamp = 'sdns://AgUAAAAAAAAAAAAOZG5zLmdvb2dsZS5jb20NL2V4cGVyaW1lbnRhbA'
 EOF
 
-	/usr/bin/dnscrypt-proxy -config /var/etc/dnscrypt-proxy.toml
+	/usr/bin/dnscrypt-proxy -config /var/etc/dnscrypt-proxy.toml -pidfile /var/run/dnscrypt-proxy.pid &
 }
 
 stop_dnscrypt()
 {
-	killall -9 dnscrypt-proxy >/dev/null 2>&1
+	kill $(cat /var/run/dnscrypt-proxy.pid) >/dev/null 2>&1 || killall -9 dnscrypt-proxy >/dev/null 2>&1
 	rm -f /var/etc/dnscrypt-proxy.toml
 }
 
 
 add_cron()
 {
-  sed -i '/up-gfwlist.sh/d' $CRON_FILE
+	sed -i '/up-gfwlist.sh/d' $CRON_FILE
 	sed -i '/v2ray_watchdog.log/d' $CRON_FILE
 	if [ $cron_mode -eq 1 ]; then
 		echo '0 5 * * * /etc/v2ray/up-gfwlist.sh > /tmp/gfwupdate.log 2>&1' >> $CRON_FILE	
@@ -417,9 +419,9 @@ add_rule()
 			;;
 		M)
 			ipset -! create $vt_gfwlist hash:ip maxelem 65536 2>/dev/null
-      awk '!/^$/&&!/^#/{printf("add vt_gfwlist %s'" "'\n",$0)}' /etc/v2ray/addinip.txt > /tmp/addinip.ipset
-      sed -i "s/vt_gfwlist/$vt_gfwlist/g" /tmp/addinip.ipset
-      ipset -! restore < /tmp/addinip.ipset
+			awk '!/^$/&&!/^#/{printf("add vt_gfwlist %s'" "'\n",$0)}' /etc/v2ray/addinip.txt > /tmp/addinip.ipset
+			sed -i "s/vt_gfwlist/$vt_gfwlist/g" /tmp/addinip.ipset
+			ipset -! restore < /tmp/addinip.ipset
 			iptables -t nat -A v2ray_pre -m set ! --match-set $vt_gfwlist dst -j RETURN
 			iptables -t nat -A v2ray_pre -m set --match-set $vt_np_ipset dst -j RETURN
 			iptables -t nat -I OUTPUT -p tcp -m multiport --dports 80,443 -m set --match-set $vt_gfwlist dst -j REDIRECT --to $V2RAY_REDIR_PORT
