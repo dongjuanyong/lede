@@ -6,7 +6,7 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=dnscrypt-proxy2
+PKG_NAME:=dnscrypt-proxy_2
 PKG_VERSION:=2.0.19
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
@@ -15,7 +15,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
-	TITLE:=A flexible DNS proxy, with support for encrypted DNS protocols
+	TITLE:=DNS proxy with support for encrypted DNS protocols
 	URL:=https://github.com/jedisct1/dnscrypt-proxy
 endef
 
