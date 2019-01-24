@@ -247,7 +247,7 @@ stop_pdnsd()
 start_dnscrypt()
 {
 	#local dnscrypt_dns_list="'rubyfish-uw', 'google', 'cisco', 'cloudflare'"
-	local dnscrypt_dns_list="'rubyfish-uw'"
+	local dnscrypt_dns_list="'rubyfish-ea', rubyfish-uw'"
 
 	if pidof dnscrypt-proxy>/dev/null; then
 		return 0
@@ -258,7 +258,7 @@ start_dnscrypt()
 
 server_names = [$dnscrypt_dns_list]
 listen_addresses = ['[::1]:$DNSCRYPT_LOCAL_PORT']
-max_clients = 300
+max_clients = 250
 ipv4_servers = true
 ipv6_servers = false
 dnscrypt_servers = true
@@ -271,11 +271,11 @@ timeout = 2500
 keepalive = 30
 use_syslog = false
 cert_refresh_delay = 240
-fallback_resolver = '9.9.9.9:53'
+fallback_resolver = '114.114.114.114:53'
 ignore_system_dns = false
 block_ipv6 = true
 cache = true
-cache_size = 25600
+cache_size = 512
 cache_min_ttl = 600
 cache_max_ttl = 86400
 cache_neg_min_ttl = 60
