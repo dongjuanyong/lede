@@ -323,7 +323,7 @@ add_cron()
 	sed -i '/up-gfwlist.sh/d' $CRON_FILE
 	sed -i '/v2ray_watchdog.log/d' $CRON_FILE
 	if [ $cron_mode -eq 1 ]; then
-		echo '0 5 * * * /etc/v2ray/up-gfwlist.sh > /tmp/gfwupdate.log 2>&1' >> $CRON_FILE	
+		echo '1 5 * * * /etc/v2ray/up-gfwlist.sh > /tmp/gfwupdate.log 2>&1' >> $CRON_FILE	
 	fi
 	echo '0 */1 * * * /etc/v2ray/v2ray-watchdog >> /tmp/v2ray_watchdog.log 2>&1' >> $CRON_FILE
 	echo '0 1 * * 0 echo "" > /tmp/v2ray_watchdog.log' >> $CRON_FILE
