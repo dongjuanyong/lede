@@ -38,7 +38,7 @@ define Build/Prepare
 endef
 
 define Build/Compile
-	chmod +x $(PKG_BUILD_DIR)/linux-$(PKG_ARCH)/$(PKG_BIN) && upx --ultra-brute $(PKG_BUILD_DIR)/linux-$(PKG_ARCH)/$(PKG_BIN)
+	chmod +x $(PKG_BUILD_DIR)/linux-$(PKG_ARCH)/$(PKG_BIN) && upx --lzma $(PKG_BUILD_DIR)/linux-$(PKG_ARCH)/$(PKG_BIN)
 endef
 
 define Package/$(PKG_NAME)/install
