@@ -308,7 +308,7 @@ cache_neg_max_ttl = 600
   # stamp = 'sdns://AgUAAAAAAAAAAAAOZG5zLmdvb2dsZS5jb20NL2V4cGVyaW1lbnRhbA'
 EOF
 
-	nohup /usr/bin/dnscrypt-proxy -config /var/etc/dnscrypt-proxy.toml -pidfile /var/run/dnscrypt-proxy.pid > /var/log/dnscrypt-proxy.log 2>&1 &
+	nohup /usr/bin/dnscrypt-proxy -config /var/etc/dnscrypt-proxy.toml -pidfile /var/run/dnscrypt-proxy.pid >/dev/null 2>&1 &
 }
 
 stop_dnscrypt()

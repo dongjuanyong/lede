@@ -52,9 +52,9 @@ end
 
 local v2ray	= {
 	log = {
-		access = "/var/log/v2access.log",
-		error = "/var/log/v2error.log",
-		loglevel = "warning"
+		access = "",
+		error = "",
+		loglevel = "none"
 	},
 	inbounds = {
 	  [1] = {

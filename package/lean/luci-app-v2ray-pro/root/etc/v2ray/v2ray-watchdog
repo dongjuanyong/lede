@@ -15,7 +15,7 @@ else
 	/usr/bin/wget --spider --quiet --tries=1 --timeout=3 www.baidu.com
 	if [ "$?" == "0" ]; then
 		echo '['$LOGTIME'] Problem decteted, restarting V2Ray...'
-		/etc/init.d/v2raypro restart
+		/etc/init.d/v2raypro restart >/dev/null 2>&1
 	else
 		echo '['$LOGTIME'] Network Problem. Do nothing.'
 	fi
