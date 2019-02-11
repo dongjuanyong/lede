@@ -247,7 +247,7 @@ stop_pdnsd()
 start_dnscrypt()
 {
 	#local dnscrypt_dns_list="'rubyfish-uw', 'google', 'cisco', 'cloudflare'"
-	local dnscrypt_dns_list="'rubyfish-ea', rubyfish-uw'"
+	local dnscrypt_dns_list="'rubyfish-ea', 'rubyfish-uw'"
 
 	if pidof dnscrypt-proxy>/dev/null; then
 		return 0
@@ -308,7 +308,7 @@ cache_neg_max_ttl = 600
   # stamp = 'sdns://AgUAAAAAAAAAAAAOZG5zLmdvb2dsZS5jb20NL2V4cGVyaW1lbnRhbA'
 EOF
 
-	nohup /usr/bin/dnscrypt-proxy -config /var/etc/dnscrypt-proxy.toml -pidfile /var/run/dnscrypt-proxy.pid >/dev/null 2>&1 &
+	start-stop-daemon -b -S -x /usr/bin/dnscrypt-proxy -- -config /var/etc/dnscrypt-proxy.toml -pidfile /var/run/dnscrypt-proxy.pid
 }
 
 stop_dnscrypt()
