@@ -367,7 +367,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +		return XT_CONTINUE;
 +	}
 +
-
++
 +	help = nfct_help(ct);
 +	if (help)
 +		return XT_CONTINUE;
