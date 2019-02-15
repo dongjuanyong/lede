@@ -110,7 +110,6 @@ local v2ray	= {
 			network = ucursor:get(conf_path, "v2raypro", "network_type"),
 			security = (ucursor:get(conf_path, "v2raypro", "tls") == '1') and "tls" or "none",
 			tcpSettings = (v2ray_stream_mode == "tcp" and ucursor:get(conf_path, "v2raypro", "tcp_obfs") == "http") and {
-				connectionReuse = true,
 				header = {
 					type = ucursor:get(conf_path, "v2raypro", "tcp_obfs"),
 					request = {
@@ -156,7 +155,6 @@ local v2ray	= {
 			} or nil,
 
 			wsSettings = (v2ray_stream_mode == "ws") and {
-				connectionReuse = true,
 				path = ucursor:get(conf_path, "v2raypro", "ws_path"),
 				headers = (ucursor:get(conf_path, "v2raypro", "ws_headers") ~= nil) and {
 					Host = ucursor:get(conf_path, "v2raypro", "ws_headers")
