@@ -89,7 +89,7 @@ start()
 	if [ -n "$vt_safe_dns" ]; then
 		if [ "$vt_safe_dns_tcp" = 1 ]; then
 			if [ "$vt_safe_dns_dnscrypt" = 1 ]; then
-				start_dnscrypt
+				check_dnscrypt
 				awk -vs="::1#$DNSCRYPT_LOCAL_PORT" '!/^$/&&!/^#/{printf("server=/%s/%s\n",$0,s)}' \
 					/etc/gfwlist/$vt_gfwlist > /var/etc/dnsmasq-go.d/01-pollution.conf
 			else
@@ -138,9 +138,6 @@ stop()
 	fi
 
 	stop_pdnsd
-	if [ "$vt_safe_dns_dnscrypt" = 0 ]; then
-		stop_dnscrypt
-	fi
 
 	# --STOP IPv4 firewall---------------------------------------------------------------
 	del_rule
@@ -161,12 +158,11 @@ reload_rule()
 	KEEP_GFWLIST=Y
 	del_rule
 	add_rule
-	if [ "$vt_safe_dns_dnscrypt" = 0 ]; then
-		stop_dnscrypt
-		if [ "$vt_safe_dns_tcp" = 1 ]; then
-			stop_pdnsd
-			start_pdnsd "$vt_safe_dns"
-		fi
+	if [ "$vt_safe_dns_dnscrypt" = 1 ]; then
+		check_dnscrypt
+	elif [ "$vt_safe_dns_tcp" = 1 ]; then
+		stop_pdnsd
+		start_pdnsd "$vt_safe_dns"
 	fi
 }
 
@@ -244,77 +240,17 @@ stop_pdnsd()
 	rm -f /var/etc/pdnsd.conf
 }
 
-start_dnscrypt()
+check_dnscrypt()
 {
-	#local dnscrypt_dns_list="'rubyfish-uw', 'google', 'cisco', 'cloudflare'"
-	local dnscrypt_dns_list="'rubyfish-ea', 'rubyfish-uw'"
-
 	if pidof dnscrypt-proxy>/dev/null; then
 		return 0
 	fi
-	
-	[ -d /var/etc ] || mkdir -p /var/etc
-	cat > /var/etc/dnscrypt-proxy.toml <<EOF
 
-server_names = [$dnscrypt_dns_list]
-listen_addresses = ['[::1]:$DNSCRYPT_LOCAL_PORT']
-max_clients = 250
-ipv4_servers = true
-ipv6_servers = false
-dnscrypt_servers = true
-doh_servers = true
-require_dnssec = false
-require_nolog = false
-require_nofilter = true
-force_tcp = false
-timeout = 2500
-keepalive = 30
-use_syslog = false
-cert_refresh_delay = 240
-fallback_resolver = '114.114.114.114:53'
-ignore_system_dns = false
-block_ipv6 = true
-cache = true
-cache_size = 512
-cache_min_ttl = 600
-cache_max_ttl = 86400
-cache_neg_min_ttl = 60
-cache_neg_max_ttl = 600
-
-[query_log]
-
-[nx_log]
-
-[blacklist]
-
-[ip_blacklist]
-
-[whitelist]
-
-[schedules]
-
-[sources]
-
-  [sources.'public-resolvers']
-  urls = ['https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v2/public-resolvers.md', 'https://download.dnscrypt.info/resolvers-list/v2/public-resolvers.md']
-  cache_file = '/etc/dnscrypt-proxy/public-resolvers.md'
-  minisign_key = 'RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3'
-  refresh_delay = 72
-  prefix = ''
-
-[static]
-
-  # [static.'google']
-  # stamp = 'sdns://AgUAAAAAAAAAAAAOZG5zLmdvb2dsZS5jb20NL2V4cGVyaW1lbnRhbA'
-EOF
-
-	start-stop-daemon -b -S -x /usr/bin/dnscrypt-proxy -- -config /var/etc/dnscrypt-proxy.toml -pidfile /var/run/dnscrypt-proxy.pid
-}
-
-stop_dnscrypt()
-{
-	kill $(cat /var/run/dnscrypt-proxy.pid) >/dev/null 2>&1 || killall -9 dnscrypt-proxy >/dev/null 2>&1
-	rm -f /var/etc/dnscrypt-proxy.toml
+	if [ "$(uci get dnscrypt-proxy_2.dnscrypt.enabled)" = 0 ]; then
+		uci set dnscrypt-proxy_2.dnscrypt.enabled='1'
+		uci commit dnscrypt-proxy_2
+		/etc/init.d/dnscrypt-proxy_2 restart
+	fi
 }
 
 

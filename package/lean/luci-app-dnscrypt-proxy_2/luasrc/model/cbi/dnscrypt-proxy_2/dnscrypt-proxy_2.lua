@@ -91,14 +91,14 @@ cache.rmempty = false
 
 local addconf = "/etc/dnscrypt-proxy/addconf"
 
-addin = s:option(TextValue, "addinconf")
+addin = s:option(TextValue, "addinconf", translate(""), translate("Add additional configurations here."))
 addin.rows = 5
 addin.wrap = "off"
 addin.cfgvalue = function(self, section)
-	return NXFS.readfile(addconf) or ""
+	return nixio.fs.readfile(addconf) or ""
 end
 addin.write = function(self, section, value)
-	NXFS.writefile(addconf, value:gsub("\r\n", "\n"))
+	nixio.fs.writefile(addconf, value:gsub("\r\n", "\n"))
 end
 
 return mp
