@@ -115,7 +115,7 @@ service_triggers() {
 }
 
 start_service() {
-	if ! validate_config_section "dnscrypt-proxy_2" ; then
+	if ! validate_config_section "dnscrypt" ; then
 		_log "err" "Config validate failed."
 		return 1
 	fi
