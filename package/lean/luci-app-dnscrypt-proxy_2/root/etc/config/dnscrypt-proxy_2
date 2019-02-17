@@ -1,5 +1,5 @@
 
-config service 'dnscrypt-proxy-2'
+config service 'dnscrypt-proxy_2'
     option enabled '0'
     option public_resolvers '1'
     option server_names 'rubyfish-ea' 'rubyfish-uw'
