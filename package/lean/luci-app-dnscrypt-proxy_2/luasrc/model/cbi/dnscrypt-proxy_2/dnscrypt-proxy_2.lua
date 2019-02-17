@@ -18,7 +18,7 @@ public_resolvers.rmempty = false
 server_names = s:option(DynamicList, "server_names", translate("Servers to use"))
 server_names.rmempty = false
 
-listen_addresses = s:option(DynamicList, "listen_addresses", translate("Listen to (address:port)"))
+listen_addresses = s:option(DynamicList, "listen_addresses", translate("Listen addresses (ip:port)"))
 listen_addresses.rmempty = false
 
 max_clients = s:option(Value, "max_clients", translate("Maximum client connections"))
@@ -41,19 +41,19 @@ doh_servers = s:option(Flag, "doh_servers", translate("Use DNS-over-HTTPS server
 doh_servers.default = 1
 doh_servers.rmempty = false
 
-require_dnssec = s:option(Flag, "require_dnssec", translate("Require DNSSEC support"))
+require_dnssec = s:option(Flag, "require_dnssec", translate("Only servers with DNSSEC support"))
 require_dnssec.default = 0
 require_dnssec.rmempty = false
 
-require_nolog = s:option(Flag, "require_nolog", translate("Require not log user queries"))
+require_nolog = s:option(Flag, "require_nolog", translate("Only servers without logging"))
 require_nolog.default = 1
 require_nolog.rmempty = false
 
-require_nofilter = s:option(Flag, "require_nofilter", translate("Require not filter queries"))
+require_nofilter = s:option(Flag, "require_nofilter", translate("nly servers without filter"))
 require_nofilter.default = 1
 require_nofilter.rmempty = false
 
-force_tcp = s:option(Flag, "force_tcp", translate("Use TCP to connect"))
+force_tcp = s:option(Flag, "force_tcp", translate("Always use TCP to connect"))
 force_tcp.default = 0
 force_tcp.rmempty = false
 
@@ -91,7 +91,7 @@ cache.rmempty = false
 
 local addconf = "/etc/dnscrypt-proxy/addconf"
 
-addin = s:option(TextValue, "addinconf", translate(""), translate("Add additional configurations here."))
+addin = s:option(TextValue, "addinconf", translate(""), translate("Put additional configurations here."))
 addin.rows = 5
 addin.wrap = "off"
 addin.cfgvalue = function(self, section)
