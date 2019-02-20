@@ -114,9 +114,3 @@ msgstr "文件已保存到"
 
 msgid "No specify upload file."
 msgstr "未指定上传文件"
-
-msgid "Severse Setting"
-msgstr "反向代理设置"
-
-msgid "Server domain"
-msgstr "反向代理域名"
