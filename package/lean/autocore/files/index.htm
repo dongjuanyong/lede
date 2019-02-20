@@ -50,9 +50,9 @@
 		local rv = {
 			uptime     = sysinfo.uptime or 0,
 			localtime  = os.date(),
-			cpuusage   = luci.sys.exec("echo $( echo $(cat /proc/stat | grep \"^cpu \" | awk '{print $1+$2+$3+$4+$5+$6+$7 \" \" $1+$2+$3+$6+$7}') $(sleep 1 && cat /proc/stat | grep \"^cpu \" | awk '{print $1+$2+$3+$4+$5+$6+$7 \" \" $1+$2+$3+$6+$7}') | awk '{print (($4-$2)/($3-$1))*100}' )"),
-			cpuspeed   = luci.sys.exec("grep 'MHz' /proc/cpuinfo | cut -c11- |sed -n '1p'")
-			cputemp    = luci.sys.exec("sensors | grep 'Core 0' | cut -c10-24")
+			cpuusage   = luci.sys.exec("echo $( echo $(cat /proc/stat | grep \"^cpu \" | awk '{print $2+$3+$4+$5+$6+$7+$8 \" \" $2+$3+$4+$7+$8}') $(sleep 1 && cat /proc/stat | grep \"^cpu \" | awk '{print $2+$3+$4+$5+$6+$7+$8 \" \" $2+$3+$4+$7+$8}') | awk '{print (($4-$2)/($3-$1))*100}' )"),
+			cpuspeed   = luci.sys.exec("grep 'MHz' /proc/cpuinfo | cut -c11- |sed -n '1p'"),
+			cputemp    = luci.sys.exec("sensors | grep 'Core 0' | cut -c10-24"),
 			loadavg    = sysinfo.load or { 0, 0, 0 },
 			memory     = meminfo,
 			memcached  = mem_cached,
@@ -632,7 +632,7 @@
 			var e;
 
 			if (e = document.getElementById('cpuinfo'))
-				e.innerHTML = String.format('%.02f\%', info.cpuusage) + " <%: @ %>" + info.cpuspeed + " <%: MHz @ %>" + info.cputemp;
+				e.innerHTML = String.format('%.02f\% @ ', info.cpuusage) + String.format('%sMHz @ %s', info.cpuspeed, info.cputemp);
 
 			if (e = document.getElementById('localtime'))
 				e.innerHTML = info.localtime;
