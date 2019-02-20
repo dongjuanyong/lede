@@ -49,7 +49,7 @@ require_nolog = s:option(Flag, "require_nolog", translate("Only servers without 
 require_nolog.default = 1
 require_nolog.rmempty = false
 
-require_nofilter = s:option(Flag, "require_nofilter", translate("nly servers without filter"))
+require_nofilter = s:option(Flag, "require_nofilter", translate("Only servers without filter"))
 require_nofilter.default = 1
 require_nofilter.rmempty = false
 
