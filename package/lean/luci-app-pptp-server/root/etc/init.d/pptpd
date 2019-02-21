@@ -55,7 +55,7 @@ setup_config() {
   delete firewall.gre
   commit firewall
 EOF
-			/etc/init.d/firewall restart
+			/etc/init.d/firewall restart >/dev/null 2>&1
 		fi
 		return 1
 	}
@@ -95,7 +95,7 @@ EOF
   set firewall.@rule[-1].proto="47"
   commit firewall
 EOF
-		/etc/init.d/firewall restart
+		/etc/init.d/firewall restart >/dev/null 2>&1
 	fi
 
 	mkdir -p /var/etc
