@@ -74,13 +74,10 @@ safe_dns_tcp.rmempty = false
 
 safe_dns_dnscrypt = s:taboption("basic",Flag, "safe_dns_dnscrypt", translate("Use dnscrypt-proxy"),
 	translate("Use dnscrypt-proxy to forward DNS requests, instead of pdnsd"))
-safe_dns_dnscrypt.default = 0
-safe_dns_dnscrypt.rmempty = false
 safe_dns_dnscrypt:depends("safe_dns_tcp", "1")
 
 alternative_proxy = s:taboption("basic",Flag, "alternative_proxy", translate("Alternative Proxies"),
 	translate("Listen to port 1080 (SOCKS5 proxy) and port 3128 (HTTP proxy)"))
-alternative_proxy.default = 0
 alternative_proxy.rmempty = false
 
 s:tab("main",  translate("Server Setting"))
@@ -207,6 +204,177 @@ tls.rmempty = false
 mux = s:taboption("main",Flag, "mux", translate("Mux"))
 mux.rmempty = false
 
+------------------------------------------------
+s:tab("reverse",  translate("Reverse Setting"))
+renabled = s:taboption("reverse",Flag, "renabled", translate("Enable"))
+renabled.rmempty = false
+
+rserver_domain = s:taboption("reverse",Value, "rserver_domain", translate("Server domain"))
+rserver_domain.datatype = "host"
+rserver_domain.placeholder = "www.myowndomain.com"
+rserver_domain:depends("renabled", "1")
+
+rdiffsvr = s:taboption("reverse",Flag, "rdiffsvr", translate("Use different server from transparent proxy"))
+rdiffsvr:depends("renabled", "1")
+rdiffsvr.rmempty = false
+
+rserver = s:taboption("reverse",Value, "raddress", translate("Server Address"))
+rserver.datatype = "host"
+rserver:depends("rdiffsvr", "1")
+
+rserver_port = s:taboption("reverse",Value, "rport", translate("Server Port"))
+rserver_port.datatype = "range(0,65535)"
+rserver_port:depends("rdiffsvr", "1")
+
+rprotocol = s:taboption("reverse",ListValue, "rprotocol", translate("Protocol"))
+rprotocol:value("vmess")
+rprotocol:value("shadowsocks")
+rprotocol:value("socks")
+rprotocol:depends("rdiffsvr", "1")
+
+rid = s:taboption("reverse",Value, "rid", translate("ID"))
+rid:depends("rprotocol", "vmess")
+rid.password = true
+
+ralterId = s:taboption("reverse",Value, "ralterId", translate("Alter ID"))
+ralterId.datatype = "range(1,65535)"
+ralterId:depends("rprotocol", "vmess")
+
+rsecurity = s:taboption("reverse",ListValue, "rsecurity", translate("Security"))
+rsecurity:value("none")
+rsecurity:value("auto")
+rsecurity:value("aes-128-cfb")
+rsecurity:value("aes-128-gcm")
+rsecurity:value("chacha20-poly1305")
+rsecurity:depends("rprotocol", "vmess")
+
+rsocksuser = s:taboption("reverse",Value, "rsocksuser", translate("Username(for authentication)"))
+rsocksuser:depends("rprotocol", "socks")
+
+rpassword = s:taboption("reverse",Value, "rpassword", translate("Password"))
+rpassword.password = true
+rpassword:depends("rprotocol", "shadowsocks")
+rpassword:depends("rprotocol", "socks")
+
+rssmethod = s:taboption("reverse",ListValue, "rssmethod", translate("Method"))
+rssmethod:value("aes-128-gcm")
+rssmethod:value("aes-256-gcm")
+rssmethod:value("chacha20-poly1305")
+rssmethod:value("aes-128-cfb")
+rssmethod:value("aes-256-cfb")
+rssmethod:value("chacha20")
+rssmethod:value("chacha20-ietf")
+rssmethod:depends("rprotocol", "shadowsocks")
+
+rssota = s:taboption("reverse",Flag, "rssota", translate("OTA"))
+rssota:depends("rssmethod", "aes-128-cfb")
+rssota:depends("rssmethod", "aes-256-cfb")
+rssota:depends("rssmethod", "chacha20")
+rssota:depends("rssmethod", "chacha20-ietf")
+
+rnetwork_type = s:taboption("reverse",ListValue, "rnetwork_type", translate("Network Type"))
+rnetwork_type:value("tcp")
+rnetwork_type:value("kcp")
+rnetwork_type:value("ws")
+rnetwork_type:value("h2")
+rnetwork_type:value("quic")
+rnetwork_type:depends("rdiffsvr", "1")
+
+-- tcp settings
+rtcp_obfs = s:taboption("reverse",ListValue, "rtcp_obfs", translate("TCP Obfs"))
+rtcp_obfs:value("none")
+rtcp_obfs:value("http")
+rtcp_obfs:depends("rnetwork_type", "tcp")
+
+rtcp_path = s:taboption("reverse",DynamicList, "rtcp_path", translate("TCP Obfs Path"))
+rtcp_path:depends("rtcp_obfs", "http")
+
+rtcp_host = s:taboption("reverse",DynamicList, "rtcp_host", translate("TCP Obfs Header"))
+rtcp_host:depends("rtcp_obfs", "http")
+rtcp_host.datatype = "host"
+
+-- kcp settings
+rkcp_obfs = s:taboption("reverse",ListValue, "rkcp_obfs", translate("KCP Obfs"))
+rkcp_obfs:value("none")
+rkcp_obfs:value("srtp")
+rkcp_obfs:value("utp")
+rkcp_obfs:value("wechat-video")
+rkcp_obfs:value("dtls")
+rkcp_obfs:value("wireguard")
+rkcp_obfs:depends("rnetwork_type", "kcp")
+
+rkcp_mtu = s:taboption("reverse",Value, "rkcp_mtu", translate("KCP MTU"))
+rkcp_mtu.datatype = "range(576,1460)"
+rkcp_mtu:depends("rnetwork_type", "kcp")
+
+rkcp_tti = s:taboption("reverse",Value, "rkcp_tti", translate("KCP TTI"))
+rkcp_tti.datatype = "range(10,100)"
+rkcp_tti:depends("rnetwork_type", "kcp")
+
+rkcp_uplink = s:taboption("reverse",Value, "rkcp_uplink", translate("KCP uplinkCapacity"))
+rkcp_uplink.datatype = "range(0,1000)"
+rkcp_uplink:depends("rnetwork_type", "kcp")
+
+rkcp_downlink = s:taboption("reverse",Value, "rkcp_downlink", translate("KCP downlinkCapacity"))
+rkcp_downlink.datatype = "range(0,1000)"
+rkcp_downlink:depends("rnetwork_type", "kcp")
+
+rkcp_readbuf = s:taboption("reverse",Value, "rkcp_readbuf", translate("KCP readBufferSize"))
+rkcp_readbuf.datatype = "range(0,100)"
+rkcp_readbuf:depends("rnetwork_type", "kcp")
+
+rkcp_writebuf = s:taboption("reverse",Value, "rkcp_writebuf", translate("KCP writeBufferSize"))
+rkcp_writebuf.datatype = "range(0,100)"
+rkcp_writebuf:depends("rnetwork_type", "kcp")
+
+rkcp_congestion = s:taboption("reverse",Flag, "rkcp_congestion", translate("KCP Congestion"))
+rkcp_congestion:depends("rnetwork_type", "kcp")
+
+-- websocket settings
+rws_path = s:taboption("reverse",Value, "rws_path", translate("WebSocket Path"))
+rws_path:depends("rnetwork_type", "ws")
+
+rws_headers = s:taboption("reverse",Value, "rws_headers", translate("WebSocket Header"))
+rws_headers:depends("rnetwork_type", "ws")
+rws_headers.datatype = "host"
+
+-- http/2 settings
+rh2_path = s:taboption("reverse",Value, "rh2_path", translate("HTTP Path"))
+rh2_path:depends("rnetwork_type", "h2")
+
+rh2_domain = s:taboption("reverse",Value, "rh2_domain", translate("HTTP Domain"))
+rh2_domain:depends("rnetwork_type", "h2")
+rh2_domain.datatype = "host"
+
+-- quic settings
+rquic_security = s:taboption("reverse",ListValue, "rquic_security", translate("QUIC Security"))
+rquic_security:value("none")
+rquic_security:value("aes-128-gcm")
+rquic_security:value("chacha20-poly1305")
+rquic_security:depends("rnetwork_type", "quic")
+
+rquic_key = s:taboption("reverse",Value, "rquic_key", translate("QUIC Key"))
+rquic_key:depends("rquic_security", "aes-128-gcm")
+rquic_key:depends("rquic_security", "chacha20-poly1305")
+rquic_key.password = true
+
+rquic_obfs = s:taboption("reverse",ListValue, "rquic_obfs", translate("QUIC Obfs"))
+rquic_obfs:value("none")
+rquic_obfs:value("srtp")
+rquic_obfs:value("utp")
+rquic_obfs:value("wechat-video")
+rquic_obfs:value("dtls")
+rquic_obfs:value("wireguard")
+rquic_obfs:depends("rnetwork_type", "quic")
+
+-- others
+rtls = s:taboption("reverse",Flag, "rtls", translate("TLS"))
+rtls:depends("rdiffsvr", "1")
+
+rmux = s:taboption("reverse",Flag, "rmux", translate("Mux"))
+rmux:depends("rdiffsvr", "1")
+
+--------------------------------------------------
 s:tab("list",  translate("User-defined GFW-List"))
 gfwlist = s:taboption("list", TextValue, "conf")
 gfwlist.description = translate("<br />（!）Note: When the domain name is entered and will automatically merge with the online GFW-List. Please manually update the GFW-List list after applying.")

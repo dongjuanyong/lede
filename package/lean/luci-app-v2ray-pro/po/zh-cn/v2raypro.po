@@ -114,3 +114,25 @@ msgstr "文件已保存到"
 
 msgid "No specify upload file."
 msgstr "未指定上传文件"
+
+msgid "Reverse Setting"
+msgstr "反向代理设置"
+
+msgid "Server domain"
+msgstr "反向代理域名"
+
+msgid "Use different server from transparent proxy"
+msgstr "使用与透明代理不同的服务器配置"
+
+msgid "Protocol"
+msgstr "协议类型"
+
+msgid "Username(for authentication)"
+msgstr "用户名(如需要验证)"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Method"
+msgstr "加密方式"
+
