@@ -249,8 +249,9 @@ check_dnscrypt()
 	if [ "$(uci get dnscrypt-proxy_2.dnscrypt.enabled)" = 0 ]; then
 		uci set dnscrypt-proxy_2.dnscrypt.enabled='1'
 		uci commit dnscrypt-proxy_2
-		/etc/init.d/dnscrypt-proxy_2 restart
 	fi
+
+	/etc/init.d/dnscrypt-proxy_2 restart
 }
 
 
