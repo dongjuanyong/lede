@@ -87,6 +87,8 @@ start()
 	mkdir -p /var/etc/dnsmasq-go.d
 	###### Anti-pollution configuration ######
 	if [ -n "$vt_safe_dns" ]; then
+		awk '!/^$/&&!/^#/{printf("server=/%s/#\n",$0)}' \
+			/etc/gfwlist/whitelist > /var/etc/dnsmasq-go.d/00-whitelist.conf
 		if [ "$vt_safe_dns_tcp" = 1 ]; then
 			if [ "$vt_safe_dns_dnscrypt" = 1 ]; then
 				check_dnscrypt
@@ -108,6 +110,8 @@ start()
 	###### dnsmasq-to-ipset configuration ######
 	case "$vt_proxy_mode" in
 		M|V)
+			awk '!/^$/&&!/^#/{printf("ipset=/%s/NULL\n",$0)}' \
+				/etc/gfwlist/whitelist > /var/etc/dnsmasq-go.d/00-whitelist-ipset.conf
 			awk '!/^$/&&!/^#/{printf("ipset=/%s/'"$vt_gfwlist"'\n",$0)}' \
 				/etc/gfwlist/$vt_gfwlist > /var/etc/dnsmasq-go.d/02-ipset.conf
 			;;

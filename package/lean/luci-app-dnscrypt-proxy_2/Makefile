@@ -13,6 +13,10 @@ PKG_RELEASE:=1
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
+define Package/luci-app-dnscrypt-proxy_2/conffiles
+/etc/dnscrypt-proxy/addconf
+endef
+
 # call BuildPackage - OpenWrt buildroot signature
 
 
