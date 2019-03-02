@@ -13,9 +13,4 @@ PKG_RELEASE:=1
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
-define Package/luci-app-v2ray-pro/conffiles
-/etc/v2ray/base-gfwlist.txt
-/etc/v2ray/addinip.txt
-endef
-
 # call BuildPackage - OpenWrt buildroot signature
