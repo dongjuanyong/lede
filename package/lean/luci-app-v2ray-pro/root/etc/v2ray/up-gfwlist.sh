@@ -1,5 +1,5 @@
 #!/bin/sh
- 
+/etc/v2ray/gen-gfwlist.sh >/dev/null 2>&1
 
 if [ -s "/tmp/ol_banned.txt" ];then
 	sort -u /etc/v2ray/base-gfwlist.txt /tmp/ol_banned.txt > /tmp/china-banned
