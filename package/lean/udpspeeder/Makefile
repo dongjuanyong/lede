@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=udpspeeder
 PKG_VERSION:=20180806.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/wangyu-/UDPspeeder.git
@@ -39,7 +39,7 @@ define Package/udpspeeder/description
 	 A Tunnel which Improves your Network Quality on a High-latency Lossy Link by using Forward Error Correction,for All Traffics(TCP/UDP/ICMP)
 endef
 
-MAKE_FLAGS += cross
+MAKE_FLAGS += cross3
 
 define Build/Prepare
 	$(PKG_UNPACK)

@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=udp2raw-tunnel
 PKG_VERSION:=20181113.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/wangyu-/udp2raw-tunnel.git
@@ -39,7 +39,11 @@ define Package/udp2raw-tunnel/description
 	udp2raw-tunnel is a tunnel which turns UDP Traffic into Encrypted FakeTCP/UDP/ICMP Traffic by using Raw Socket.
 endef
 
-MAKE_FLAGS += cross
+PKG_FLAGS:=cross3
+ifeq ($(ARCH),x86_64)
+	PKG_FLAGS:=amd64_hw_aes
+endif
+MAKE_FLAGS += $(PKG_FLAGS)
 
 define Build/Prepare
 	$(PKG_UNPACK)
@@ -51,7 +55,12 @@ endef
 
 define Package/udp2raw-tunnel/install
 	$(INSTALL_DIR) $(1)/usr/bin
+ifeq ($(PKG_FLAGS),cross3)
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/udp2raw_cross $(1)/usr/bin/udp2raw
+endif
+ifeq ($(PKG_FLAGS),amd64_hw_aes)
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/udp2raw_amd64_hw_aes $(1)/usr/bin/udp2raw
+endif
 endef
 
 $(eval $(call BuildPackage,udp2raw-tunnel))
