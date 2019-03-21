@@ -39,7 +39,7 @@ define Package/udpspeeder/description
 	 A Tunnel which Improves your Network Quality on a High-latency Lossy Link by using Forward Error Correction,for All Traffics(TCP/UDP/ICMP)
 endef
 
-MAKE_FLAGS += cross3
+MAKE_FLAGS += cross2
 
 define Build/Prepare
 	$(PKG_UNPACK)
