@@ -6,7 +6,7 @@ diff -uNr a/makefile b/makefile
  	${cc_cross}   -o ${NAME}_cross    -I. ${SOURCES} ${FLAGS} -lrt -static -lgcc_eh -O3   
  
 +cross2x:git_version
-+        ${cc_cross}   -o ${NAME}_cross    -I. ${SOURCES_AES_ACC} ${FLAGS} -lrt -static -lgcc_eh -O3 lib/aes_acc/asm/x64.S
++	${cc_cross}   -o ${NAME}_cross    -I. ${SOURCES_AES_ACC} ${FLAGS} -lrt -static -lgcc_eh -O3 lib/aes_acc/asm/x64.S
 +
  cross3:git_version
  	${cc_cross}   -o ${NAME}_cross    -I. ${SOURCES} ${FLAGS} -lrt -static -O3
