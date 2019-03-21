@@ -40,9 +40,9 @@ define Package/udp2raw-tunnel/description
 endef
 
 ifeq ($(ARCH),x86_64)
-	MAKE_FLAGS += cross2x
+	MAKE_FLAGS += crossx
 else
-	MAKE_FLAGS += cross2
+	MAKE_FLAGS += cross
 endif
 
 define Build/Prepare
