@@ -120,6 +120,9 @@ start()
 	# -----------------------------------------------------------------
 	###### Restart main 'dnsmasq' service if needed ######
 	if ls /var/etc/dnsmasq-go.d/* >/dev/null 2>&1; then
+		if [ -s /etc/v2ray/fixup.sh ]; then
+			/etc/v2ray/fixup.sh
+		fi
 		mkdir -p /tmp/dnsmasq.d
 		cat > /tmp/dnsmasq.d/dnsmasq-go.conf <<EOF
 conf-dir=/var/etc/dnsmasq-go.d
