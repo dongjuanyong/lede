@@ -105,10 +105,10 @@ diff -uNr a/src/forward.c b/src/forward.c
 +            {
 +              flags = sflag;
 +              if (obj->addr.sa.sa_family == AF_INET)
-+                *addrpp = (struct all_addr *) &obj->addr.in.sin_addr;
++                *addrpp = (union all_addr *) &obj->addr.in.sin_addr;
 +#ifdef HAVE_IPV6
 +              else
-+                *addrpp = (struct all_addr *) &obj->addr.in6.sin6_addr;
++                *addrpp = (union all_addr *) &obj->addr.in6.sin6_addr;
 +#endif
 +            }
 +         else if (!flags || (flags & F_NXDOMAIN))
